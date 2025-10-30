@@ -1,0 +1,14 @@
+{{- $rootVar := . -}}
+{{- $baseValues := .Values -}}
+{{- range .Values.egressIPList }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: eip-test-{{ .name }}
+  labels:
+    {{- include "egressip.labels" $rootVar | nindent 4 }}
+{{- range $index, $topping := .selector.matchLabels }}
+    {{ $index }}: {{ $topping | quote }}
+{{- end }}
+{{- end }}

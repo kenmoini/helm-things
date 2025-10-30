@@ -1,0 +1,32 @@
+
+{{- $rootVar := . -}}
+{{- $baseValues := .Values -}}
+{{- range .Values.egressIPList }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: eip-test-{{ .name }}
+  namespace: eip-test-{{ .name }}
+  labels:
+    {{- include "egressip.labels" $rootVar | nindent 4 }}
+spec:
+  template:
+    spec:
+      containers:
+        - image: registry.redhat.io/openshift4/ose-cli:latest
+          env:
+            - name: TARGET_ENDPOINT
+              value: "{{ $baseValues.targetCURLTestEndpoint }}"
+          command:
+            - /bin/bash
+            - -c
+            - |
+              curl -kv --max-time 10 $TARGET_ENDPOINT
+
+          imagePullPolicy: IfNotPresent
+          name: curl-test
+      dnsPolicy: ClusterFirst
+      restartPolicy: OnFailure
+      terminationGracePeriodSeconds: 30
+{{ end }}
