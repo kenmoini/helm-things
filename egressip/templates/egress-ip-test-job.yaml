@@ -18,11 +18,16 @@ spec:
           env:
             - name: TARGET_ENDPOINT
               value: "{{ $baseValues.targetCURLTestEndpoint }}"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           command:
             - /bin/bash
             - -c
             - |
-              curl -kv --max-time 10 $TARGET_ENDPOINT
+              curl -kv --max-time 10 $TARGET_ENDPOINT/$POD_NAME || exit 1
+          name: curl-test
 
           imagePullPolicy: IfNotPresent
           name: curl-test
