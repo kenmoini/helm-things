@@ -1,10 +1,6 @@
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: eip-test-{{ .name }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
+{{- if .Values.deployTestJobs }}
+{{- $rootVar := . -}}
+{{- $baseValues := .Values -}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -20,11 +16,21 @@ rules:
     verbs:
       - get
       - list
+{{- range .Values.egressIPList }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: eip-test-{{ .name }}
+  namespace: eip-test-{{ .name }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: eip-test
+  namespace: eip-test-{{ .name }}
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 rules:
@@ -51,6 +57,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: eip-test
+  namespace: eip-test-{{ .name }}
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 roleRef:
@@ -65,6 +72,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: eip-test-reader
+  namespace: eip-test-{{ .name }}
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 roleRef:
@@ -74,3 +82,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: eip-test-{{ .name }}
+    namespace: eip-test-{{ .name }}
