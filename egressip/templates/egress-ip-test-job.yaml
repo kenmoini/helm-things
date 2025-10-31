@@ -14,6 +14,10 @@ metadata:
     {{- include "egressip.labels" $rootVar | nindent 4 }}
 spec:
   template:
+    metadata:
+      name: eip-test-{{ .name }}
+      labels:
+        {{- include "egressip.labels" $rootVar | nindent 8 }}
     spec:
       containers:
         - image: registry.redhat.io/openshift4/ose-cli:latest
