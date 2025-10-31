@@ -13,15 +13,8 @@ metadata:
   labels:
     {{- include "egressip.labels" $rootVar | nindent 4 }}
 spec:
-  selector: 
-    matchLabels:
-      batch.kubernetes.io/job-name: eip-test-{{ .name }}
+  selector:  {}
   template:
-    metadata:
-      name: eip-test-{{ .name }}
-      labels:
-        batch.kubernetes.io/job-name: eip-test-{{ .name }}
-        {{- include "egressip.labels" $rootVar | nindent 8 }}
     spec:
       containers:
         - image: registry.redhat.io/openshift4/ose-cli:latest
