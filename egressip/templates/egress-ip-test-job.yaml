@@ -15,12 +15,12 @@ metadata:
 spec:
   selector: 
     matchLabels:
-      job-name: eip-test-{{ .name }}
+      batch.kubernetes.io/job-name: eip-test-{{ .name }}
   template:
     metadata:
       name: eip-test-{{ .name }}
       labels:
-        job-name: eip-test-{{ .name }}
+        batch.kubernetes.io/job-name: eip-test-{{ .name }}
         {{- include "egressip.labels" $rootVar | nindent 8 }}
     spec:
       containers:
