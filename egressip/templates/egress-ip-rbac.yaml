@@ -85,4 +85,3 @@ subjects:
     namespace: eip-test-{{ .name }}
 {{- end }}
 {{- end }}
-{{- end }}
