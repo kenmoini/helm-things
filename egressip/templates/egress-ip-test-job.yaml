@@ -94,7 +94,7 @@ spec:
                             echo "Testing Egress IP: $EGRESS_IP"
                             # Loop our curl request 5 times until we get a successful response
                             for i in {1..5}; do
-                              curl -kv --retry --retry-all-errors --max-time 10 "$TARGET_ENDPOINT/?pod=$POD_NAME&node=$MY_NODE_NAME&ip=$EGRESS_IP"
+                              curl -kv --retry --retry-all-errors --max-time 10 "$TARGET_ENDPOINT/egress-test?pod=$POD_NAME&node=$MY_NODE_NAME&egressip=$EGRESS_IP"
                               if [ $? -eq 0 ]; then
                                 echo "Curl request succeeded on attempt $i"
                                 break
