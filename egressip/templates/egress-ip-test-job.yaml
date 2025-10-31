@@ -21,6 +21,10 @@ spec:
           env:
             - name: TARGET_ENDPOINT
               value: "{{ $baseValues.targetCURLTestEndpoint }}"
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
             - name: POD_NAME
               valueFrom:
                 fieldRef:
@@ -29,7 +33,7 @@ spec:
             - /bin/bash
             - -c
             - |
-              curl -kv --max-time 10 $TARGET_ENDPOINT/$POD_NAME || exit 1
+              curl -kv --max-time 10 "$TARGET_ENDPOINT/?pod=$POD_NAME&node=$MY_NODE_NAME" || exit 1
           name: curl-test
 
           imagePullPolicy: IfNotPresent
