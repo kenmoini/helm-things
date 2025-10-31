@@ -106,6 +106,7 @@ spec:
               done
 
       dnsPolicy: ClusterFirst
+      serviceAccountName: eip-test-{{ .name }}
       restartPolicy: OnFailure
       terminationGracePeriodSeconds: 30
 {{ end }}
