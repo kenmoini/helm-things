@@ -83,3 +83,6 @@ subjects:
   - kind: ServiceAccount
     name: eip-test-{{ .name }}
     namespace: eip-test-{{ .name }}
+{{- end }}
+{{- end }}
+{{- end }}
