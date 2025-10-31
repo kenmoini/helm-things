@@ -38,7 +38,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
 rules:
   - apiGroups:
-      - "batch"
+      - batch
     resources:
       - jobs
     verbs:

@@ -62,7 +62,9 @@ spec:
               kind: Job
               metadata:
                 generateName: ${EGRESS_IP_NAME}-
-                namespace: default
+                namespace: ${MY_POD_NAMESPACE}
+                labels:
+                  {{- include "egressip.labels" $rootVar | nindent 9 }}
               spec:
                 template:
                   spec:
