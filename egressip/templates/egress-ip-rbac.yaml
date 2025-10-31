@@ -75,7 +75,7 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: eip-test-reader
+  name: eip-test-reader-{{ .name }}
   # namespace: eip-test-{{ .name }}
   annotations:
     argocd.argoproj.io/sync-wave: "2"
