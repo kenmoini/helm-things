@@ -1,0 +1,68 @@
+{{- if gt (len .Values.interfaceConfigurations) 0 }}
+{{- $rootVar := . -}}
+{{- $baseValues := .Values -}}
+{{- range .Values.interfaceConfigurations }}
+{{- if gt (len .vlanStack) 0 }}
+{{- $interfaceConfig := . }}
+{{- range .vlanStack }}
+---
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: {{ $interfaceConfig.name }}
+  labels:
+    {{- include "ocp-networking.labels" $rootVar | nindent 4 }}
+spec:
+  {{- if $interfaceConfig.nodeSelector }}
+  nodeSelector:
+    {{- range $index, $label := $interfaceConfig.nodeSelector }}
+    {{ $index }}: {{ $label | quote }}
+    {{- end }}
+  {{- end }}
+  desiredState:
+    interfaces:
+      - name: bond0.70
+        description: {{ .name }} VLAN {{ .vlanID }} using {{ .baseInterface }}
+        ipv4:
+          dhcp: false
+          enabled: false
+        mtu: {{ .mtu | default 1500 }}
+        state: {{ .state | default "up" }}
+        type: vlan
+        vlan:
+          base-iface: {{ .baseInterface }}
+          id: {{ .vlanID }}
+
+      - name: ovs-br70
+        description: {{ .name }} OVS bridge with {{ .baseInterface }}.{{ .vlanID }} and br-ex{{ .vlanID }}
+        type: ovs-bridge
+        state: {{ .state | default "up" }}
+        bridge:
+          options:
+            stp: 
+              enabled: false
+          port:
+            - name: {{ .baseInterface }}.{{ .vlanID }}
+            - name: br-ex{{ .vlanID }}
+
+      - name: br-ex{{ .vlanID }}
+        type: ovs-interface
+        mtu: {{ .mtu | default 1500 }}
+        state: {{ .state | default "up" }}
+        ipv4:
+          dhcp: true
+          enabled: true
+          forwarding: true
+          # address:
+          #   - ip: 192.168.60.49
+          #     prefix-length: 23
+    ovn:
+      bridge-mappings:
+        - bridge: ovs-br{{ .vlanID }}
+          localnet: vmnet{{ .vlanID }}-{{ .name }}
+          state: {{ .state | default "present" }}
+
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
