@@ -67,6 +67,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: eip-test-{{ .name }}
+    namespace: eip-test-{{ .name }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
