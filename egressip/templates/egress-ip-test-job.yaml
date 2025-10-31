@@ -8,6 +8,8 @@ kind: Job
 metadata:
   name: eip-test-{{ .name }}
   namespace: eip-test-{{ .name }}
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=true,Replace=true
   labels:
     {{- include "egressip.labels" $rootVar | nindent 4 }}
 spec:
