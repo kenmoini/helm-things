@@ -4,6 +4,7 @@
 deployTestJobs: true
 targetCURLTestEndpoint: "https://something:8080"
 
+createEgressIPs: true
 egressIPList:
 - name: nuclear-prod
   egressIPs:

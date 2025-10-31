@@ -1,16 +1,23 @@
-{{- if .Values.deployTestJobs }}
+{{- if .Values.createEgressIPs }}
 {{- $rootVar := . -}}
 {{- $baseValues := .Values -}}
 {{- range .Values.egressIPList }}
 ---
-apiVersion: v1
-kind: Namespace
+apiVersion: k8s.ovn.org/v1
+kind: EgressIP
 metadata:
-  name: eip-test-{{ .name }}
+  name: {{ .name }}
   labels:
     {{- include "egressip.labels" $rootVar | nindent 4 }}
+spec:
+  egressIPs:
+    {{- range .egressIPs }}
+    - {{ . }}
+    {{- end }}
+  namespaceSelector:
+    matchLabels:
 {{- range $index, $label := .selector.matchLabels }}
-    {{ $index }}: {{ $label | quote }}
+      {{ $index }}: {{ $label | quote }}
 {{- end }}
 {{- end }}
 {{- end }}
