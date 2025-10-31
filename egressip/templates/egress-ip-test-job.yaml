@@ -13,6 +13,7 @@ metadata:
   labels:
     {{- include "egressip.labels" $rootVar | nindent 4 }}
 spec:
+  selector: {}
   template:
     metadata:
       name: eip-test-{{ .name }}
