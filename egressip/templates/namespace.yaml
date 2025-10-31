@@ -8,6 +8,7 @@ kind: Namespace
 metadata:
   name: eip-test-{{ .name }}
   annotations:
+    argocd.argoproj.io/sync-wave: "-1"
     argocd.argoproj.io/sync-options: Prune=true
   labels:
     {{- include "egressip.labels" $rootVar | nindent 4 }}
