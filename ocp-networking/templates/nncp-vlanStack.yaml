@@ -21,7 +21,7 @@ spec:
   {{- end }}
   desiredState:
     interfaces:
-      - name: bond0.70
+      - name: bond0.{{ .vlanID }}
         description: {{ .name }} VLAN {{ .vlanID }} using {{ .baseInterface }}
         ipv4:
           dhcp: false
@@ -33,7 +33,7 @@ spec:
           base-iface: {{ .baseInterface }}
           id: {{ .vlanID }}
 
-      - name: ovs-br70
+      - name: ovs-br{{ .vlanID }}
         description: {{ .name }} OVS bridge with {{ .baseInterface }}.{{ .vlanID }} and br-ex{{ .vlanID }}
         type: ovs-bridge
         state: {{ .state | default "up" }}
