@@ -38,6 +38,7 @@ spec:
         type: ovs-bridge
         state: {{ .state | default "up" }}
         bridge:
+          allow-extra-patch-ports: true
           options:
             stp: 
               enabled: false
