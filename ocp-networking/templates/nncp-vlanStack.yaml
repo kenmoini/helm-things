@@ -1,10 +1,10 @@
 {{- if gt (len .Values.interfaceConfigurations) 0 }}
 {{- $rootVar := . -}}
 {{- $baseValues := .Values -}}
-{{- range .Values.interfaceConfigurations }}
+{{- range .Values.interfaceConfigurations }}{{ if not .skipNNCPCreation }}
 {{- if gt (len .vlanStack) 0 }}
 {{- $interfaceConfig := . }}
-{{- range .vlanStack }}
+{{- range .vlanStack }}{{ if not .skipNNCPCreation }}
 ---
 apiVersion: nmstate.io/v1
 kind: NodeNetworkConfigurationPolicy
@@ -66,6 +66,8 @@ spec:
           localnet: vmnet{{ .vlanID }}-{{ .name }}
           state: {{ .state | default "present" }}
 
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

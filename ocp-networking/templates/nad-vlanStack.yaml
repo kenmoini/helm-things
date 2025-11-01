@@ -2,9 +2,11 @@
 {{- $rootVar := . -}}
 {{- $baseValues := .Values -}}
 {{- range .Values.interfaceConfigurations }}
+{{ if not .skipNADCreation }}
 {{- if gt (len .vlanStack) 0 }}
 {{- $interfaceConfig := . }}
 {{- range .vlanStack }}
+{{ if not .skipNADCreation }}
 ---
 apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
@@ -25,6 +27,8 @@ spec:
       "physicalNetworkName": "vmnet{{ .vlanID }}-{{ .name }}"
     }
 
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
