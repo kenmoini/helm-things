@@ -6,7 +6,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: eip-test-{{ .name }}
+  generateName: eip-test-{{ .name }}-
   namespace: eip-test-{{ .name }}
   annotations:
     argocd.argoproj.io/sync-wave: "10"
@@ -63,6 +63,8 @@ spec:
               metadata:
                 generateName: ${EGRESS_IP_NAME}-
                 namespace: ${MY_POD_NAMESPACE}
+                labels:
+                  {{- include "egressip.labels" $rootVar | nindent 18 }}
               spec:
                 template:
                   spec:
