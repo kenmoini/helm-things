@@ -321,3 +321,41 @@ spec:
         retry:
           limit: 2
 ```
+
+Or as a plain Application:
+
+```yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: egress-ips
+  namespace: openshift-gitops
+spec:
+  sources:
+    - path: 'egressip'
+      helm:
+        valueFiles:
+          - "$values/clusters/hub-cluster/helm-values/egressips.yaml"
+      repoURL: 'https://github.com/kenmoini/helm-things'
+    - ref: values
+      repoURL: 'https://github.com/kenmoini/lab-ocp'
+      targetRevision: HEAD
+
+  project: default
+  destination:
+    server: 'https://kubernetes.default.svc'
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - SkipDryRunOnMissingResource=true
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      allowEmpty: true
+      selfHeal: true # overrides changes made on the cluster that drift from git state
+    retry:
+      limit: 2
+```
