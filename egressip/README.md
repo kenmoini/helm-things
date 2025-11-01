@@ -12,21 +12,19 @@ targetCURLTestEndpoint: "http://debug-server:8080"
 
 createEgressIPs: true
 egressIPList:
-- name: nuclear-prod
+- name: prod
   egressIPs:
     - 1.2.3.4
     - 4.5.6.7
   selector:
     matchLabels:
-      bu: nukesRus
       env: prod
-- name: nuclear-non-prod
+- name: non-prod
   egressIPs:
     - 2.3.4.5
     - 7.8.9.1
   selector:
     matchLabels:
-      bu: nukesRus
       env: non-prod
 ```
 
