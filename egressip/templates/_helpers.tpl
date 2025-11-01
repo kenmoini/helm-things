@@ -31,6 +31,19 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
+Common Test labels
+*/}}
+{{- define "egressip.labels" -}}
+egressip-test: "true"
+helm.sh/chart: {{ include "egressip.chart" . }}
+{{ include "egressip.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
 Common labels
 */}}
 {{- define "egressip.labels" -}}
