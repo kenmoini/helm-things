@@ -33,7 +33,7 @@ Create chart name and version as used by the chart label.
 {{/*
 Common Test labels
 */}}
-{{- define "egressip.labels" -}}
+{{- define "egressip.testlabels" -}}
 egressip-test: "true"
 helm.sh/chart: {{ include "egressip.chart" . }}
 {{ include "egressip.selectorLabels" . }}
