@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+# IN ENV
+EGRESS_IP_NAME="disconnected-set1"
+MY_POD_NAMESPACE="test-disconnected-set1"
+TARGET_ENDPOINT="http://disconn-harbor.d70.kemo.labs:8080"
+
+####
+
+EGRESS_IPS=$(oc get egressip $EGRESS_IP_NAME -o jsonpath='{.spec.egressIPs}')
+echo "Egress IPs for $EGRESS_IP_NAME: $EGRESS_IPS"
+# Strip brackets and spaces from EGRESS_IPS
+EGRESS_IPS_CLEAN=$(echo $EGRESS_IPS | tr -d '[] ')
+echo "Cleaned Egress IPs: $EGRESS_IPS_CLEAN"
+# Clean the IP list for use in the curl test
+EGRESS_IPS=$(echo $EGRESS_IPS_CLEAN | sed 's/","/ /g' | tr -d '"')
+
+# Loop through the EgressIPs and test each one with a separate Job
+for IP in $EGRESS_IPS; do
+  echo "Preparing to test Egress IP: $IP"
+
+  # Create a new Job that will run the curl command from a pod with the matching egress IP
+  cat <<EOF | kubectl create -f -
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: ${EGRESS_IP_NAME}-
+  namespace: ${MY_POD_NAMESPACE}
+  labels:
+    eip-test: "${EGRESS_IP_NAME}"
+spec:
+  template:
+    spec:
+      containers:
+        - name: curl-test
+          env:
+            - name: EGRESS_IP
+              value: "${IP}"
+            - name: EGRESS_IP_NAME
+              value: "${EGRESS_IP_NAME}"
+            - name: TARGET_ENDPOINT
+              value: "${TARGET_ENDPOINT}"
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          image: registry.redhat.io/openshift4/ose-cli:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              #!/usr/bin/env bash
+              echo "Testing Egress IP: \$EGRESS_IP"
+              # Loop our curl request 5 times until we get a successful response
+              while true; do
+                CURL_REQ=\$(curl -k --write-out '%{http_code}' --silent --output /dev/null --max-time 10 "\$TARGET_ENDPOINT/egress-test?pod=\$POD_NAME&node=\$MY_NODE_NAME&egressip=\$EGRESS_IP")
+                http_code=\$(tail -n1 <<< "\$CURL_REQ")  # get the last line
+                content=\$(sed '$ d' <<< "\$CURL_REQ")   # get all but the last line which contains the status code
+
+                echo "\$http_code"
+                echo "\$content"
+                if [[ "\$http_code" -eq 200 ]]; then
+                  echo "Curl request succeeded"
+                  break
+                else
+                  echo "Curl request failed, retrying in 2 seconds..."
+                  sleep 2
+                fi
+              done
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 10
+EOF
+done

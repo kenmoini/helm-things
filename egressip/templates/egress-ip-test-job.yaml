@@ -63,6 +63,8 @@ spec:
               metadata:
                 generateName: ${EGRESS_IP_NAME}-
                 namespace: ${MY_POD_NAMESPACE}
+                labels:
+                  eip-test: "${EGRESS_IP_NAME}"
               spec:
                 template:
                   spec:
@@ -92,17 +94,25 @@ spec:
                         args:
                           - |
                             #!/usr/bin/env bash
-                            echo "Testing Egress IP: $EGRESS_IP"
+                            echo "Testing Egress IP: \$EGRESS_IP"
                             # Loop our curl request 5 times until we get a successful response
-                            for i in {1..5}; do
-                              curl -ksv --max-time 10 "$TARGET_ENDPOINT/egress-test?pod=$POD_NAME&node=$MY_NODE_NAME&egressip=$EGRESS_IP"
-                              if [ $? -eq 0 ]; then
-                                echo "Curl request succeeded on attempt $i"
+                            while true; do
+                              CURL_REQ=\$(curl -k --write-out '%{http_code}' --silent --output /dev/null --max-time 10 "\$TARGET_ENDPOINT/egress-test?pod=\$POD_NAME&node=\$MY_NODE_NAME&egressip=\$EGRESS_IP")
+                              http_code=\$(tail -n1 <<< "\$CURL_REQ")  # get the last line
+                              content=\$(sed '$ d' <<< "\$CURL_REQ")   # get all but the last line which contains the status code
+
+                              echo "\$http_code"
+                              echo "\$content"
+                              if [[ "\$http_code" -eq 200 ]]; then
+                                echo "Curl request succeeded"
                                 break
+                              else
+                                echo "Curl request failed, retrying in 2 seconds..."
+                                sleep 2
                               fi
-                              echo "Curl request failed on attempt $i"
                             done
                     restartPolicy: Never
+                    terminationGracePeriodSeconds: 10
               EOF
               done
 
