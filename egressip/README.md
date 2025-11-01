@@ -1,5 +1,7 @@
 # OpenShift EgressIP Helm Chart
 
+> Base Info: https://hackmd.io/@uEc--auZQr6p9NRV2558Hw/r1VZxCwCll
+
 This Helm Chart allows you to easily deploy EgressIPs from a simple list and run tests against them enmass.
 
 You can optionally create EgressIPs and/or the tests for them, in case you already have EgressIPs created and just want to test, or just want to create EgressIPs without testing.
