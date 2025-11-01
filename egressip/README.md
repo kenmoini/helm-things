@@ -262,3 +262,62 @@ spec:
 ```
 
 > Note:  You can't run this service in the same cluster that the EgressIPs are being tested from.
+
+## ArgoCD
+
+You can easily deploy this Chart with ArgoCD, using your own repo as a values source:
+
+```yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: egress-ips
+  namespace: openshift-gitops
+spec:
+  generators:
+    - matrix:
+        generators:
+          - clusters:
+              selector:
+                matchLabels:
+                  appset/egress-ips: enabled
+          - list:
+              elements:
+              - appName: egress-ips
+                helmRepoURL: 'https://github.com/kenmoini/helm-things'
+                helmChartPath: 'egressip'
+                valuesRepo: 'https://github.com/kenmoini/lab-ocp'
+                valuesPath: "$values/clusters/{{name}}/helm-values/egressips.yaml"
+  template:
+    metadata:
+      name: "{{name}}-{{appName}}"
+      annotations:
+        argocd.argoproj.io/manifest-generate-paths: ".;.."
+    spec:
+      project: default
+      sources:
+        - path: '{{helmChartPath}}'
+          helm:
+            valueFiles:
+              - "{{valuesPath}}"
+          repoURL: '{{helmRepoURL}}'
+        - ref: values
+          repoURL: '{{valuesRepo}}'
+          targetRevision: HEAD
+      destination:
+        name: "{{name}}"
+      syncPolicy:
+        automated:
+          prune: true
+          allowEmpty: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - SkipDryRunOnMissingResource=true
+          - ServerSideApply=true
+          - RespectIgnoreDifferences=true
+          - ApplyOutOfSyncOnly=true
+        retry:
+          limit: 2
+```
