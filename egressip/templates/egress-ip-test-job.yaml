@@ -68,6 +68,7 @@ spec:
                 labels:
                   {{- include "egressip.testlabels" $rootVar | nindent 18 }}
               spec:
+                ttlSecondsAfterFinished: 3600
                 template:
                   spec:
                     containers:
