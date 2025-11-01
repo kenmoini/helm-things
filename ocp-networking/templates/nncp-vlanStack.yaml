@@ -51,12 +51,15 @@ spec:
         mtu: {{ .mtu | default 1500 }}
         state: {{ .state | default "up" }}
         ipv4:
-          dhcp: true
           enabled: true
           forwarding: true
-          # address:
-          #   - ip: 192.168.60.49
-          #     prefix-length: 23
+          {{- if .ipAddresses }}{{ $addrParts := splitList "/" .ipAddresses }}
+          address:
+            - ip: {{ index $addrParts 0 }}
+              prefix-length: {{ index $addrParts 1 }}
+          {{- else }}
+          dhcp: true
+          {{- end }}
     ovn:
       bridge-mappings:
         - bridge: ovs-br{{ .vlanID }}
