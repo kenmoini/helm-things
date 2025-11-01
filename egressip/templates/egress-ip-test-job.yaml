@@ -63,8 +63,6 @@ spec:
               metadata:
                 generateName: ${EGRESS_IP_NAME}-
                 namespace: ${MY_POD_NAMESPACE}
-                labels:
-                  eip-test: "${EGRESS_IP_NAME}"
               spec:
                 template:
                   spec:
