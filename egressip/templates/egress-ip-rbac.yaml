@@ -7,7 +7,7 @@ kind: ClusterRole
 metadata:
   name: eip-reader
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "2"
 rules:
   - apiGroups:
       - k8s.ovn.org
@@ -27,7 +27,7 @@ metadata:
   name: eip-test-{{ .name }}
   namespace: eip-test-{{ .name }}
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "2"
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -35,7 +35,7 @@ metadata:
   name: eip-test
   namespace: eip-test-{{ .name }}
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "2"
 rules:
   - apiGroups:
       - batch
