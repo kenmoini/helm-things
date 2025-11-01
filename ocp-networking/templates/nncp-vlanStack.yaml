@@ -53,7 +53,7 @@ spec:
         ipv4:
           enabled: true
           forwarding: true
-          {{- if .ipAddresses }}{{ $addrParts := splitList "/" .ipAddresses }}
+          {{- if .ipAddress }}{{ $addrParts := splitList "/" .ipAddress }}
           address:
             - ip: {{ index $addrParts 0 }}
               prefix-length: {{ index $addrParts 1 }}
