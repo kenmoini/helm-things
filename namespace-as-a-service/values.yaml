@@ -12,6 +12,9 @@ naasConfig:
     environment: production
     capabilities:
       - monitoring
+    serviceAccounts:
+      - my-app-sa
+
   - name: staging-app
     namespaces:
       - my-staging-namespace
@@ -20,6 +23,9 @@ naasConfig:
     capabilities:
       - monitoring
       - virtualization
+    serviceAccounts:
+      - my-app-sa
+
   - name: dev-app
     namespaces:
       - my-dev-namespace
@@ -29,6 +35,8 @@ naasConfig:
       - monitoring
       - virtualization
       - devspaces
+    serviceAccounts:
+      - my-app-sa
 
 
 # Default values for namespace-as-a-service.

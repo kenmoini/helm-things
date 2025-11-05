@@ -8,7 +8,9 @@ While the controls and options can be expansive, this example aims to build a de
   - Annotations
   - Labels
 - {ApplicationAware}ResourceQuotas and LimitRanges based on t-shirt sizes
-- RBAC alignment to Users and Groups
+- ServiceAccounts
+- RBAC alignment to Users/Groups/ServiceAccounts
+- SecurityContextConstraints enablement
 - Default NetworkPolicy
 
 Other things can be added, but those are common concerns.
