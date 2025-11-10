@@ -8,12 +8,10 @@ While the controls and options can be expansive, this example aims to build a de
   - Annotations
   - Labels
 - {ApplicationAware}ResourceQuotas and LimitRanges based on t-shirt sizes
-- ServiceAccounts
 - RBAC alignment to Users/Groups/ServiceAccounts
-- SecurityContextConstraints enablement
 - Default NetworkPolicy
 
-Other things can be added, but those are common concerns.
+Other things like ServiceAccount/SecurityContextConstraint enablement can be added, but these above are common concerns.
 
 ## Core Concepts
 
@@ -27,13 +25,13 @@ Labels/Tagging is an opinionated thing - this Helm Chart uses the following exam
 
 - `naas.kemo.dev/requester` to signify the requesting `{user|sa/ns}-{name}`
 - `naas.kemo.dev/sizing` for the "T-Shirt Size"
-- `naas.kemo.dev/tenant` for tenant grouping, eg internal/external/team-based/etc.  Could as easily be something like Billing Group/Business Unit/etc.
+- `naas.kemo.dev/application` for app/tenant grouping based on the name, eg internal/external/team-based/etc.  Could as easily be something like Billing Group/Business Unit/etc.
 - `naas.kemo.dev/environment` for segmenting dev/test, preprod, and prod
 
 And some additional labels help glue things into ACM:
 
-- `naas.kemo.dev/virtualization` to denote a NS with VMs
-- `naas.kemo.dev/devspaces` for a DevSpaces enabled namespace
+- `capability.naas.kemo.dev/virtualization` to denote a NS with VMs
+- `capability.naas.kemo.dev/devspaces` for a DevSpaces enabled namespace
 
 Based on those labels being set on the Namespace, you can either use it as just a bit of metadata - or in combination with ACM/Kyverno to manage resources that are not subject to Chart updates or Git modifications.
 
@@ -49,7 +47,7 @@ clusters/${CLUSTER_NAME}/
                           naas-values/values.${APP_NAME}.yaml
 ```
 
-- When onboarding an application/user, you create a new Helm Values file in the appropriate place,
+- When onboarding an application/user, you create a new Helm Values file in the appropriate place, create an Argo Application pointing to it, and your Platform Operations onboarding AppSetOfApps is watching that cluster-bound directory with the Argo Applications in it and syncs it down where it needs to be.
 
 ## Mini ADRs
 

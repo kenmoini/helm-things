@@ -1,3 +1,90 @@
+
+{{/*
+Set the resource quota value for a given t-shirt size - Pods
+*/}}
+{{- define "namespace-as-a-service.resourceQuotaPodsValue" -}}
+{{- $size := . | lower -}}
+{{- if eq $size "small" -}}
+8
+{{- else if eq $size "medium" -}}
+16
+{{- else if eq $size "large" -}}
+24
+{{- else -}}
+4
+{{- end -}}
+{{- end }}
+
+
+{{/*
+Set the resource quota value for a given t-shirt size - CPU Requests
+*/}}
+{{- define "namespace-as-a-service.resourceQuotaCPURequestsValue" -}}
+{{- $size := . | lower -}}
+{{- if eq $size "small" -}}
+4
+{{- else if eq $size "medium" -}}
+8
+{{- else if eq $size "large" -}}
+16
+{{- else -}}
+2
+{{- end -}}
+{{- end }}
+
+
+{{/*
+Set the resource quota value for a given t-shirt size - CPU Limits
+*/}}
+{{- define "namespace-as-a-service.resourceQuotaCPULimitsValue" -}}
+{{- $size := . | lower -}}
+{{- if eq $size "small" -}}
+8
+{{- else if eq $size "medium" -}}
+16
+{{- else if eq $size "large" -}}
+32
+{{- else -}}
+4
+{{- end -}}
+{{- end }}
+
+
+{{/*
+Set the resource quota value for a given t-shirt size - Memory Requests
+*/}}
+{{- define "namespace-as-a-service.resourceQuotaMemoryRequestsValue" -}}
+{{- $size := . | lower -}}
+{{- if eq $size "small" -}}
+4Gi
+{{- else if eq $size "medium" -}}
+8Gi
+{{- else if eq $size "large" -}}
+16Gi
+{{- else -}}
+2Gi
+{{- end -}}
+{{- end }}
+
+
+{{/*
+Set the resource quota value for a given t-shirt size - Memory Limits
+*/}}
+{{- define "namespace-as-a-service.resourceQuotaMemoryLimitsValue" -}}
+{{- $size := . | lower -}}
+{{- if eq $size "small" -}}
+8Gi
+{{- else if eq $size "medium" -}}
+16Gi
+{{- else if eq $size "large" -}}
+32Gi
+{{- else -}}
+4Gi
+{{- end -}}
+{{- end }}
+
+
+
 {{/*
 Expand the name of the chart.
 */}}

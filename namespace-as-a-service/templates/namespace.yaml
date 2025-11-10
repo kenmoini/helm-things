@@ -1,0 +1,25 @@
+{{- $rootValues := .Values }}
+{{- range $config := .Values.naasConfig }}
+{{- range .namespaces }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ . }}
+  labels:
+    naas.kemo.dev/environment: {{ $config.environment }}
+    naas.kemo.dev/sizing: {{ $config.tshirtSize }}
+    naas.kemo.dev/application: {{ $config.name }}
+    naas.kemo.dev/requester: {{ $rootValues.requester.name }}
+    naas.kemo.dev/requester-type: {{ $rootValues.requester.type }}
+    {{- if $config.capabilities }}
+    {{- range $cap := $config.capabilities }}
+    capability.naas.kemo.dev/{{ $cap }}: "true"
+    {{- end }}
+    {{- end }}
+  annotations:
+    openshift.io/requester: {{ $rootValues.requester.name }}
+    # openshift.io/description: ${PROJECT_DESCRIPTION}
+    # openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+---
+{{- end }}
+{{- end }}

@@ -1,0 +1,27 @@
+{{- $rootValues := .Values }}
+{{- range $config := .Values.naasConfig }}
+{{- range .namespaces }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  creationTimestamp: null
+  name: admin
+  namespace: {{ . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: {{ $rootValues.requester.name }}
+{{- if $config.groupAccess }}
+{{- range $group := $config.groupAccess }}
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: {{ $group }}
+{{- end }}
+{{- end }}
+---
+{{- end }}
+{{- end }}

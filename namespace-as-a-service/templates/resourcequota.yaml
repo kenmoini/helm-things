@@ -1,0 +1,22 @@
+{{- $rootValues := .Values }}
+{{- range $config := .Values.naasConfig }}
+{{- range .namespaces }}
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: base-resource-quota
+  namespace: {{ . }}
+  labels:
+    naas.kemo.dev/environment: {{ $config.environment }}
+    naas.kemo.dev/sizing: {{ $config.tshirtSize }}
+    naas.kemo.dev/application: {{ $config.name }}
+spec:
+  hard:
+    pods: '{{ include "namespace-as-a-service.resourceQuotaPodsValue" $config.tshirtSize }}'
+    requests.cpu: '{{ include "namespace-as-a-service.resourceQuotaCPURequestsValue" $config.tshirtSize }}'
+    requests.memory: {{ include "namespace-as-a-service.resourceQuotaMemoryRequestsValue" $config.tshirtSize }}
+    limits.cpu: '{{ include "namespace-as-a-service.resourceQuotaCPULimitsValue" $config.tshirtSize }}'
+    limits.memory: {{ include "namespace-as-a-service.resourceQuotaMemoryLimitsValue" $config.tshirtSize }}
+---
+{{- end }}
+{{- end }}
