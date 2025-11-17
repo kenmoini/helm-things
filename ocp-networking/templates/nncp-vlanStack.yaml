@@ -52,7 +52,7 @@ spec:
         state: {{ .state | default "up" }}
         ipv4:
           enabled: true
-          forwarding: true
+          #forwarding: true
           {{- if .ipAddress }}{{ $addrParts := splitList "/" .ipAddress }}
           address:
             - ip: {{ index $addrParts 0 }}
