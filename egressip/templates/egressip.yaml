@@ -31,6 +31,12 @@ spec:
       {{ $index }}: {{ $label | quote }}
 {{- end }}
 {{- end }}
+{{- if .matchExpressions }}
+    matchExpressions:
+{{- with .matchExpressions }}
+      {{- toYaml . | nindent 6 }}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
 
