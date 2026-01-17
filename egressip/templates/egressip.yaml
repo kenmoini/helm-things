@@ -25,12 +25,10 @@ spec:
 {{- if .podSelector }}
 {{- with .podSelector }}
   podSelector:
-{{- if .selector.matchLabels }}
-{{- with .selector.matchLabels }}
+{{- if .matchLabels }}
     matchLabels:
-{{- range $index, $label := . }}
+{{- range $index, $label := .matchLabels }}
       {{ $index }}: {{ $label | quote }}
-{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
